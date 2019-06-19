@@ -113,3 +113,6 @@ NEW - Web application successfully reads from database and displays results.
 
 TODO - Implement logic for Create, Read, and Delete.
 TODO - Make web application look nicer, if time permits.
+
+[June 19, 2019 - 4:00:11 AM]
+ISSUE - Error 24000: Invalid cursor state. No solution yet.

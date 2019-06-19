@@ -9,6 +9,9 @@ def controller(input, conn = None):
     global CONN, DATA
     if CONN == None and conn != None:
         CONN = conn
+    connection = pyodbc.connect(CONN)
+    connection.autocommit = True
+    cursor = connection.cursor()
     default = "SELECT * FROM song"
     query = ""
     if input:
@@ -34,12 +37,10 @@ def controller(input, conn = None):
                 query = update(table, cond, col, vals)
             if action == "delete" and cond:
                 query = delete(table, cond)
-            if action == "sort" and col and order:
-                query = sort(table, col, order)
+            if action == "sort" and col and dir:
+                query = sort(table, col, dir)
             if action == "find" and cond:
                 query = find(table, cond)
-    connection = pyodbc.connect(CONN)
-    cursor = connection.cursor()
     if query == "":
         query = default
     cursor.execute(query)
@@ -51,6 +52,7 @@ def controller(input, conn = None):
         DATA += "</tr>"
     DATA += "</table>"
     views.DATA = DATA
+    connection.commit()
     cursor.close()
     connection.close()
         

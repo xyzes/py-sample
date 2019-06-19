@@ -15,16 +15,15 @@ table, th, td, tr {
 }
 
 .left-div {
-    width: 15%;
+    width: 250px;
     background: red;
     float: left;
-    margin-right: 185px;
+    margin-right: 260px;
     background-color: white;
 }
 
 .right-div {
-    margin-left: 15%;
-    overflow: auto;
-    margin-left: 190px;
+    margin-left: 270px;
+    overflow: scroll;
     background-color: white;
 }
