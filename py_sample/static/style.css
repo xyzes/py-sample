@@ -11,12 +11,13 @@ body {
 
 .left-div {
     float: left;
-    width: 300px;
-    margin-right: 8px;
+    width: 25%;
+    margin-right: 250px;
     background-color: white;
 }
 
 .right-div {
-    margin-left: 310px;
+    width: 75%;
+    margin-left: 260px;
     background-color: white;
 }

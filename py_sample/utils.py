@@ -19,7 +19,7 @@ def controller(input, conn = None):
         item2 = input.get("Item 2")
         col = input.get("column")
         vals = input.get("new")
-        cond = ""
+        cond = None
         if item1 and comp and item2:
             cond = "{} {} {}".format(item1, comp, item2)
         if action and table:
