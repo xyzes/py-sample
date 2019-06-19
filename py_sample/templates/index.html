@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}">
+    <meta charset="utf-8" />
+    <title>{{title}}</title>
+</head>
+<body>
+    <div class="left-div">
+        <a href="/home">Index</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+        <h1>py-sample</h1>
+        <form name="Query" action="/home" method="GET">
+            <div>
+                <h4>Action</h4>
+                <select name="action">
+                    <option value="create">Create</option>
+                    <option value="read">Read</option>
+                    <option value="update">Update</option>
+                    <option value="delete">Delete</option>
+                    <option value="sort">Sort</option>
+                    <option value="find">Find</option>
+                </select>
+            </div>
+            <div>
+                <h4>Table</h4>
+                <select name="table">
+                    <option value="song">Songs</option>
+                    <option value="sound">Sounds</option>
+                    <option value="movie">Movies</option>
+                    <option value="artist">Artists</option>
+                    <option value="publisher">Publishers</option>
+                    <option value="album">Albums</option>
+                    <option value="genre">Genres</option>
+                </select>
+            </div>
+            <div>
+                <h4>Condition (No effect on CREATE or READ operations. Leave blank for no condition (*))</h4>
+                <input type="text" name="Item 1" value="">
+                <select name="Comparator">
+                    <option value="=">=</option>
+                    <option value="!=">!=</option>
+                    <option value="<"><</option>
+                    <option value=">">></option>
+                    <option value="<="><=</option>
+                    <option value=">=">>=</option>
+                    <option value="has">has</option>
+                </select>
+                <input type="text" name="Item 2" value="">
+            </div>
+            <div>
+                <h4>Column to Modify (Only used for UPDATE operations).</h4>
+                <input type="text" name="column" value="">
+            </div>
+            <div>
+                <h4>New Values (No effect on Read, Delete, Sort, and Find actions. No effect on file system)</h4>
+                <p>Insert one value for UPDATE, or insert values separated by commas for CREATE.</p>
+                <input type="text" name="new" value="">
+            </div>
+            <div>
+                <input type="submit" value="Submit" />
+            </div>
+        </form>
+    </div>
+    <div class="right-div">
+        <h4>RESULTS</h4>
+        {{data}}
+    </div>
+</body>
+</html>

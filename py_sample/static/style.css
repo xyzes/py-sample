@@ -1,0 +1,22 @@
+body {
+    background-color: darkblue;
+    font-family: "Courier New";
+}
+
+.table .th .td .tr {
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+}
+
+.left-div {
+    float: left;
+    width: 300px;
+    margin-right: 8px;
+    background-color: white;
+}
+
+.right-div {
+    margin-left: 310px;
+    background-color: white;
+}

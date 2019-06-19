@@ -1,0 +1,115 @@
+[May 23, 2019 - 09:03:00 PM]
+EVENT: Original project proposal submitted.
+Name of the proposal is Ableton Live Sample Organizer. Purpose is to allow music producers, DJ's and all
+multimedia workers to organize their files in a safe and resource efficient way.
+Features:
+	1. Real-time scanning of Ableton User library. Add new entries for new files, show missing files.
+	2. Sort and filter samples by title, length, bitrate, publisher, and other metadata properties.
+	3. Issue specific requests, like finding files with empty metadata fields or duplicates.
+	4. Provide an interface to view and modify the metadata of said files.
+
+[June 6, 2019 - 3:52:00 PM]
+EVENT: Progress Report submitted.
+Summary: Unsuccessful attempt to implement the database in MySQL and read file properties into CSV.
+File Path was used as primary key for entities pertaining to system files. Originally stored as LONGTEXT,
+which did not allow the program to compile, changed to VARCHAR afterwards which allowed the logical design
+to be forward engineered with the issue being not able to store a full file path. Attempting to read the
+properties of files using a Windows Powershell script resulted in CSV files that only stored the File path
+but none of the properties of the files.
+
+Project was almost abandoned.
+
+[June 17, 2019 - 09:58:26 PM]
+NEW - Transferred complete sampleorganizer database from MySQL to Microsoft SQL Server Management System.
+Justification:
+Visual Studio 2019 has native compatibility for SQL, Python, and web development all in one package. It 
+is also a more user-friendly IDE and one that I am familiar with. From now on, all development of this 
+project will occur within Visual Studio.
+
+NEW - Logical design now uses int values as primary key instead of LONGTEXT or VARCHAR. File path is still
+stored in the database as a unique key, for file modification purposes.
+
+NEW - Files added:
+1. runserver.py: Runs the py_sample application package.
+2. __init__.py: Main entry point for the program.
+	TODO - User should be able to do the following:
+		Sort - See any number of sorted files in descending or ascending order of a user-specified field.
+		Find - See any number of files that meet specifications described by the user.
+			FindEmpty - See all files that contain empty fields.
+			FindDuplicates - See all files with similar or identical names.
+		CommandAlter - Issue a command to alter any number of fields of any number of files.
+			FillEmpty - Issue one or more commands to fill any number of empty fields of files.
+			DeleteDuplicates - Issue one or more commands to delete any number of duplicate files.
+			NOTE: User should be able to specify one value for all fields or modify each one differently.
+3. views.py: Will implement the GUI of the program.
+4. utils.py: A controller or mediator between the GUI and the database.
+	TODO - Controller should be able to do the following:
+		Receive - Accurately interpret the input received from the user and send the appropriate command
+		  to the database server.
+		Populate - Scan the media folder in real-time or on command to reflect the file system.
+		Select - Read values from the database and return them to the program.
+		Modify - When CommandAlter is used, modify any number of files to meet the user's requirements.
+		Update - When CommandAlter is used, modify entries in the database to reflect the changes to the
+		  file system.
+		Respond - Accurately interpret the output received from the database and send the results to the
+		  program to be displayed to the user.
+
+FILE: media\design[06172019].png - A picture of the logical design of the database using a UML diagram.		
+
+[June 18, 2019 - 02:05:40 AM]
+NEW - Added Sort, Find, and CommandAlter procedures to database using Microsoft SQL Server Management
+System. Uses dynamic programming to minimize amount of SQL code in Python. Most of the logic behind the
+procedures will be in the controller (utils.py).
+
+POSSIBLE ISSUE: No backwards compatibility with MySQL from this point forward (T-SQL uses different syntax).
+
+NEW - Tested a method to iterate over files using Python. As expected, it appears to be much more 
+intuitive than Windows Powershell. It is likely that it will require a library to read and alter the
+properties of the files as desired.
+
+TODO - Find a way to read and modify individual files using Python, given a file path or file name.
+TODO - Implement GUI: a web application would be ideal, otherwise command line will suffice.
+
+[June 18, 2019 - 12:58:02 PM]
+NEW - Created Adders for all tables, created CommandDelete function to delete any value that meets a given 
+condition. Database has the basic functions to implement front-end and, if time permits, data collection
+and modification of files through Python.
+
+[June 18, 2019 - 02:14:40 PM]
+NEW - Functional web application using Flask, with different sections. Will not implement style until the
+main functionality of the program is usable.
+
+TODO - Find a way to display SQL values on web application. If not able to do by tonight, resort to cmd.
+
+[June 18, 2019 - 11:02:48 PM]
+NEW - Values successfully displayed in HTML website since a few hours ago.
+NEW - Functions to create, read, update, delete, sort, and find by calling dynamic SQL functions are
+complete.
+
+TODO - Implement logic to interpret input in the controller.
+TODO - If time permits, find a way to let the user submit a query from the web application. Else, resort
+to cmd and finish web application another time.
+
+[June 19, 2019 - 12:43:58 AM]
+EVENT - System crash approximately 2 mins ago. No files or changes were lost.
+
+NEW - User can submit a query from the web application using a form which combines drop-down menus, text
+fields and a submit button. This form is then sent back to the controller to update the data shown by the
+web app.
+
+TODO - Implement logic to interpret input in the controller.
+TODO - Make sure all CRUD operations work on the database before 2:00:00 AM.
+
+[June 19, 2019 - 1:28:15 AM]
+EVENT - Second system crash approximately 12 mins ago. All static files lost.
+ACTION TAKEN: Uninstalled all non-essential extensions. Created GitHub repository in case of loss of
+essential files.
+RESULT: IDE appears to be running more smoothly.
+
+TODO - Complete pending actions from previous log entry before 2:30:00 AM.
+
+[June 19, 2019 - 2:00:38 AM]
+NEW - Web application successfully reads from database and displays results.
+
+TODO - Implement logic for Create, Read, and Delete.
+TODO - Make web application look nicer, if time permits.
