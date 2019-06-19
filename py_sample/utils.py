@@ -19,12 +19,15 @@ def controller(input, conn = None):
         item2 = input.get("Item 2")
         col = input.get("column")
         vals = input.get("new")
+        dir = input.get("direction")
         cond = None
         if item1 and comp and item2:
             cond = "{} {} {}".format(item1, comp, item2)
-        if action and table:
-            if action == "read":
+        if action != "" and table != "":
+            if action == "read" and vals:
                 query = read(table, vals)
+            if action == "read" and not vals:
+                query = read(table)
             if action == "create" and vals:
                 query = create(table, vals)
             if action == "update" and vals and cond:
@@ -35,51 +38,49 @@ def controller(input, conn = None):
                 query = sort(table, col, order)
             if action == "find" and cond:
                 query = find(table, cond)
-    cursor = CONN.cursor()
-    if query != "":
-        cursor.execute(query)
-    else:
-        cursor.execute(default)
+    connection = pyodbc.connect(CONN)
+    cursor = connection.cursor()
+    if query == "":
+        query = default
+    cursor.execute(query)
     DATA = "<table>"
     for row in cursor:
         DATA += "<tr>"
-        for x in row:
-            DATA += "<td>" + str(x) + "</td>"
+        for col in row:
+            DATA += "<td>" + str(col) + "</td>"
         DATA += "</tr>"
     DATA += "</table>"
     views.DATA = DATA
+    cursor.close()
+    connection.close()
         
 DATA = 'C:\\Users\\xyzes\\Documents\\Python\\py-sample\\data'
 
 def scan(CONN):
-    cursor = CONN.cursor()
     for subdir, dirs, files in os.walk(DATA):
         for file in files:
             print(str.join(subdir, file))
 
 def create(table, val):
-    ans = "EXEC sampleorganizer.dbo.Add{}, {}".format(str(table).capitalize(), values)
+    ans = "EXEC sampleorganizer.dbo.Add{} {};".format(str(table).capitalize(), val)
     return ans
 
-def read(table, val = "*"):
-    col = str(val);
-    if col == None:
-        col = "*"
-    ans = "SELECT {} FROM {}".format(values, table)
+def read(table, col = "*"):
+    ans = "SELECT {} FROM {}".format(col, table)
     return ans;
 
 def update(table, cond, col, val):
-    ans = "EXEC sampleorganizer.dbo.CommandAlter {}, {}, {}, {}".format(table, cond, col, val)
+    ans = "EXEC sampleorganizer.dbo.CommandAlter {}, {}, {}, {};".format(table, cond, col, val)
     return ans
 
 def delete(table, cond):
-    ans = "EXEC sampleorganizer.dbo.CommandDelete {}, {}".format(table, cond)
+    ans = "EXEC sampleorganizer.dbo.CommandDelete {}, {};".format(table, cond)
     return ans
 
 def sort(table, col, order):
-    ans = "EXEC sampleorganizer.dbo.Sort {}, {}, {}".format(table, col, order)
+    ans = "EXEC sampleorganizer.dbo.Sort {}, {}, {};".format(table, col, order)
     return ans
 
 def find(table, cond):
-    ans = "EXEC sampleorganizer.dbo.Find {}, {}, {}".format(table, cond)
+    ans = "EXEC sampleorganizer.dbo.Find {}, {};".format(table, cond)
     return ans

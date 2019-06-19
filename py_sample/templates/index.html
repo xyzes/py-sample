@@ -16,6 +16,7 @@
             <div>
                 <h4>Action</h4>
                 <select name="action">
+                    <option value=""></option>
                     <option value="create">Create</option>
                     <option value="read">Read</option>
                     <option value="update">Update</option>
@@ -27,6 +28,7 @@
             <div>
                 <h4>Table</h4>
                 <select name="table">
+                    <option value=""></option>
                     <option value="song">Songs</option>
                     <option value="sound">Sounds</option>
                     <option value="movie">Movies</option>
@@ -34,6 +36,14 @@
                     <option value="publisher">Publishers</option>
                     <option value="album">Albums</option>
                     <option value="genre">Genres</option>
+                </select>
+            </div>
+            <div>
+                <h4>Sort Order</h4>
+                <select name="direction">
+                    <option value=""></option>
+                    <option value="desc">Descending</option>
+                    <option value="asc">Ascending</option>
                 </select>
             </div>
             <div>
@@ -51,7 +61,7 @@
                 <input type="text" name="Item 2" value="">
             </div>
             <div>
-                <h4>Column to Modify (Only used for UPDATE operations).</h4>
+                <h4>Column to Modify or Order By (Only used for UPDATE and SORT operations).</h4>
                 <input type="text" name="column" value="">
             </div>
             <div>
