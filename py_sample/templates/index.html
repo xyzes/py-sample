@@ -7,35 +7,34 @@
     <title>{{title}}</title>
 </head>
 <body>
-    <div class="left-div">
-        <a href="/home">Index</a>
-        <a href="/about">About</a>
-        <a href="/contact">Contact</a>
-        <h1>py-sample</h1>
-        <form name="Query" action="/home" method="GET">
+        <div class="left-div">
+            <a href="/home">Index</a>
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+            <h1>py-sample</h1>
+            <div>
+                <form name="Table" action="/home" method="GET">
+                    <h4>Table</h4>
+                    <select name="table" onchange="this.form.submit()">
+                        <option value=""></option>
+                        <option value="song">Songs</option>
+                        <option value="sound">Sounds</option>
+                        <option value="movie">Movies</option>
+                        <option value="artist">Artists</option>
+                        <option value="publisher">Publishers</option>
+                        <option value="album">Albums</option>
+                        <option value="genre">Genres</option>
+                    </select>
+                </form>
+            </div>
             <div>
                 <h4>Action</h4>
                 <select name="action">
                     <option value=""></option>
-                    <option value="create">Create</option>
-                    <option value="read">Read</option>
                     <option value="update">Update</option>
                     <option value="delete">Delete</option>
                     <option value="sort">Sort</option>
                     <option value="find">Find</option>
-                </select>
-            </div>
-            <div>
-                <h4>Table</h4>
-                <select name="table">
-                    <option value=""></option>
-                    <option value="song">Songs</option>
-                    <option value="sound">Sounds</option>
-                    <option value="movie">Movies</option>
-                    <option value="artist">Artists</option>
-                    <option value="publisher">Publishers</option>
-                    <option value="album">Albums</option>
-                    <option value="genre">Genres</option>
                 </select>
             </div>
             <div>
@@ -65,15 +64,9 @@
                 <input type="text" name="column" value="">
             </div>
             <div>
-                <h4>New Values (No effect on READ, DELETE, SORT, and FIND operations. No effect on file system)</h4>
-                <p>Insert one value for UPDATE, or insert values separated by commas for CREATE.</p>
-                <input type="text" name="new" value="">
-            </div>
-            <div>
                 <input type="submit" value="Submit" />
             </div>
-        </form>
-    </div>
+        </div>
     <div class="right-div">
         <h4>RESULTS</h4>
         {{data}}

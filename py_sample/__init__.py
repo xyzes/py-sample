@@ -6,11 +6,21 @@ from flask import Flask
 app = Flask(__name__)
 
 import getpass
-import py_sample.views
 import py_sample.utils
+import urllib
 
-# Create connection Object which will contain SQL Server Connection
+# The __init__ file is the main entry point for the program.
+# It prompts the user for their credentials and constructs the connection string to be given to the controller.
+DRIVER = "{SQL Server Native Client 11.0};"
+SERVER = "(localdb)\MSSQLLocalDB"
+DATABASE = "sampleorganizer"
 print("Please type your username:")
-CONN ='DRIVER={SQL Server Native Client 11.0};' + 'SERVER=(localdb)\MSSQLLocalDB;' + 'DATABASE=sampleorganizer;' + 'UID=' + input() + ';' + 'PWD=' + getpass.getpass('Enter your password:\n') + ';'
+UID = input() # <-- Prompt user for username in console.
+PWD = getpass.getpass() # <-- Prompt user for password in console.
+PARAMS ='DRIVER={}SERVER={};DATABASE={};UID={};PWD={};'.format(DRIVER, SERVER, DATABASE, UID, PWD)
+CONN = urllib.parse.quote_plus(PARAMS)
 
-views.update(utils.controller({}, CONN))
+# Initialize the controller in its initial state:
+utils.controller({}, CONN)
+
+# NOTE: views.py is not required in this file; the controller will initialize the view.

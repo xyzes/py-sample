@@ -8,28 +8,25 @@ from flask import Markup
 from flask import request
 from py_sample import app
 from py_sample import utils
-import pypyodbc as pyodbc
 
-DATA = ""
-def update(new):
-    DATA = new
-
+data = "" # <-- Initialized to an empty string
 
 @app.route('/')
 @app.route('/home', methods=['GET'])
 def home():
-    utils.controller(request.args)
-    """Renders the home page."""
+    """Renders the home page. Sends user input to the controller."""
+    global data
+    data = utils.controller(request.args)
     return render_template(
         'index.html',
         title='Home Page',
         year=datetime.now().year,
-        data=Markup(DATA)
+        data=Markup(data) # <-- This function renders the output of the controller to the user.
     )
 
 @app.route('/contact')
 def contact():
-    """Renders the contact page."""
+    """Renders the contact page (Not used)."""
     return render_template(
         'contact.html',
         title='Contact',
@@ -39,7 +36,7 @@ def contact():
 
 @app.route('/about')
 def about():
-    """Renders the about page."""
+    """Renders the about page (Not used)."""
     return render_template(
         'about.html',
         title='About',

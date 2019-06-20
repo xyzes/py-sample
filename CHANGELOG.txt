@@ -111,8 +111,36 @@ TODO - Complete pending actions from previous log entry before 2:30:00 AM.
 [June 19, 2019 - 2:00:38 AM]
 NEW - Web application successfully reads from database and displays results.
 
-TODO - Implement logic for Create, Read, and Delete.
+TODO - Implement logic for Create, Update, and Delete.
 TODO - Make web application look nicer, if time permits.
 
 [June 19, 2019 - 4:00:11 AM]
 ISSUE - Error 24000: Invalid cursor state. No solution yet.
+
+[June 19, 2019 - 12:51:02 PM]
+EVENT - Presented progress report of project in Database Design class. No solution for Error 24000 yet.
+
+[June 19, 2019 - 5:52:59 PM]
+EVENT - Re-initialized back end, will attempt to use sqlalchemy instead of pypyodbc.
+NEW - Added more stored procedures to modify or get items from tables individually.
+
+[June 19, 2019 - 10:57:43 PM]
+NEW - Successfully changed all connections to sqlalchemy. Read operation is functional once again.
+NEW - Added comments to .py files.
+NEW - Significant UI changes (described below):
+
+UI changes: 
+1. To simplify logic and dynamic SQL statements, the HTML file changes the table displayed as soon as it
+is selected, without the need to hit the submit button. This table is then stored in the controller and
+all CRUD operations will be done in whatever table is selected.
+2. To add a new value, the table displayed by the home page now has an extra row at the bottom, which
+serves as a form to enter new values and insert them into the database.
+3. Tables now display column headers.
+
+[June 19, 2019 - 11:58:14 PM]
+EVENT - Successfully added new values to the database through the web app!
+NEW - Minor changes to stored procedures, to allow a variable number of arguments to insert.
+
+TODO - Test all tables to look for bugs in Create operation.
+TODO - Implement logic and new UI for Update and Delete.
+TODO - If time permits, implement the Filter and Sort functions and data collection from file system.

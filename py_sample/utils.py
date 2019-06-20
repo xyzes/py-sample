@@ -1,88 +1,129 @@
-import os
-import pypyodbc as pyodbc
+from sqlalchemy import create_engine
 from py_sample import views
 
-DATA = "test"
-CONN = None
+ENGINE = None # <-- Stores the engine
+CONN = None # <-- Stores the connection
+DIR = 'C:\\Users\\xyzes\\Documents\\Python\\py-sample\\data' # <-- Not used
+COLUMNS = {"album" : ["ID", "Title", "Artist ID", "Length (in Time)", "Num. of Tracks"],
+           "artist" : ["ID", "Artist", "First Name", "Last Name", "Genre ID"],
+           "genre" : ["ID", "Genre"],
+           "movie" : ["ID", "Filepath", "Filename", "Title", "Running Length", "Encoding Rate", "Release Year", "Publisher ID"],
+           "publisher" : ["ID", "Publisher", "City", "Country"],
+           "song" : ["ID", "Filepath", "Filename", "Title", "Artist ID", "Album ID", "Album Artist ID", "Release Year", "Genre ID", "Time Length", "Bit Rate", "Publisher ID"],
+           "sound" : ["ID", "Filepath", "Filename", "Artist ID", "Genre ID", "Time Length", "Bit Rate", "Publisher ID"]}
+dataset = "publisher" # <-- The table displayed to the user at any given point in time
+
 
 def controller(input, conn = None):
-    global CONN, DATA
+    """
+    Controller interprets input from the view and updates the view with data
+    from the database.
+    """
+    global ENGINE, CONN, COLUMNS, dataset
+    # If a connection string was given and the controller is not already
+    # connected, initialize the engine and connect to the database:
     if CONN == None and conn != None:
-        CONN = conn
-    connection = pyodbc.connect(CONN)
-    connection.autocommit = True
-    cursor = connection.cursor()
-    default = "SELECT * FROM song"
-    query = ""
+        ENGINE = create_engine("mssql+pyodbc:///?odbc_connect=%s" % conn)
+        CONN = ENGINE.connect()
+    sql = "EXEC dbo.sproc_get{}" # <-- Default query selects a table when formatted.
+    query = "" # <-- Initialize new query to empty string.
+    # The following section interprets the input and chooses or builds a query:
     if input:
-        action = input.get("action")
+        # If input is given check if table was changed:
         table = input.get("table")
-        item1 = input.get("Item 1")
-        comp = input.get("Comparator")
-        item2 = input.get("Item 2")
-        col = input.get("column")
-        vals = input.get("new")
-        dir = input.get("direction")
-        cond = None
-        if item1 and comp and item2:
-            cond = "{} {} {}".format(item1, comp, item2)
-        if action != "" and table != "":
-            if action == "read" and vals:
-                query = read(table, vals)
-            if action == "read" and not vals:
-                query = read(table)
-            if action == "create" and vals:
-                query = create(table, vals)
-            if action == "update" and vals and cond:
-                query = update(table, cond, col, vals)
-            if action == "delete" and cond:
-                query = delete(table, cond)
-            if action == "sort" and col and dir:
-                query = sort(table, col, dir)
-            if action == "find" and cond:
-                query = find(table, cond)
-    if query == "":
-        query = default
-    cursor.execute(query)
-    DATA = "<table>"
-    for row in cursor:
-        DATA += "<tr>"
+        if table:
+            # If table was changed, change global dataset to match table:
+            dataset = table
+            # The table is displayed afterwards and continues to be stored in the controller.
+            query = sql.format(dataset)
+        elif not table:
+            new = []
+            fields = COLUMNS.get(dataset) # <-- This line gets field names for new entries
+            for col in range(1, len(fields)):
+                # Retrieve user input based on indexes from COLUMNS
+                val = input.get("add{}".format(col))
+                if val != None:
+                    # If value is not None, it is added to the list
+                    new.append(val)
+                else:
+                    # Empty string is added in place of None
+                    new.append("")
+            if len(new) == 0:
+                pass
+            else:
+                # If new is not empty, that means the user attempted to add new entries.
+                # The program attempts the transaction.
+                transaction = CONN.begin()
+                try:
+                    # Attempt to commit the transaction:
+                    CONN.execute(add(new)) # <-- Calls helper function add(vals)
+                    transaction.commit() # COMMIT
+                except:
+                    # If the transaction fails, it is rolled back.
+                    transaction.rollback
+                    raise
+                # Since the procedure to add values does not return a value
+                query = sql.format(dataset)
+                pass
+    else:
+        # If no input is given, continue to display current table:
+        query = sql.format(dataset)
+    # The following section constructs the output from the data received:
+    display = CONN.execute(query)
+    data = "<table>"
+    tags = COLUMNS.get(dataset) # <-- This line gets column headers.
+    data += "<tr>"
+    for tag in tags:
+        # Each header is added to the top of the table.
+        data += "<td><b>" + tag + "</b></td>"
+    data += "</tr>"
+    for row in display:
+        # This for loop iterates through the data and adds it to the table.
+        data += "<tr>"
         for col in row:
-            DATA += "<td>" + str(col) + "</td>"
-        DATA += "</tr>"
-    DATA += "</table>"
-    views.DATA = DATA
-    connection.commit()
-    cursor.close()
-    connection.close()
-        
-DATA = 'C:\\Users\\xyzes\\Documents\\Python\\py-sample\\data'
+            data += "<td>" + str(col) + "</td>"
+        data += "</tr>"
+    data += "<tr><form name=\"Add\" action=\"/home\" method=\"GET\">"
+    for col in range(len(tags)):
+        # An extra row is added at the end with a form to add new values to the table.
+        data += "<td>"
+        if col == 0:
+            data += "<input type=\"submit\" value=\"Add\">"
+        else:
+            # New values have the column number attached as a suffix.
+            # To retrieve these values, the controller will use the indexes in COLUMNS
+            data += "<input type=\"text\" name=\"add{}\" value=\"\">".format(str(col))
+        data += "</td>"
+    data += "</form></tr>"
+    data += "</table>"
+    # Return the data constructed by the controller
+    return data
 
-def scan(CONN):
-    for subdir, dirs, files in os.walk(DATA):
+def scan():
+    """ 
+    This function will scan the directory specified by global constant DIR and
+    update the database based on changes to the file system (Not used).
+    """
+    for subdir, dirs, files in os.walk(DIR):
         for file in files:
             print(str.join(subdir, file))
 
-def create(table, val):
-    ans = "EXEC sampleorganizer.dbo.Add{} {};".format(str(table).capitalize(), val)
-    return ans
-
-def read(table, col = "*"):
-    ans = "SELECT {} FROM {}".format(col, table)
-    return ans;
-
-def update(table, cond, col, val):
-    ans = "EXEC sampleorganizer.dbo.CommandAlter {}, {}, {}, {};".format(table, cond, col, val)
-    return ans
-
-def delete(table, cond):
-    ans = "EXEC sampleorganizer.dbo.CommandDelete {}, {};".format(table, cond)
-    return ans
-
-def sort(table, col, order):
-    ans = "EXEC sampleorganizer.dbo.Sort {}, {}, {};".format(table, col, order)
-    return ans
-
-def find(table, cond):
-    ans = "EXEC sampleorganizer.dbo.Find {}, {};".format(table, cond)
+def add(vals):
+    """
+    This function will construct a SQL statement to add the values given to the
+    dataset stored by global variable dataset.
+    """
+    global COLUMNS, dataset
+    ans = "dbo.sproc_Insert{} ".format(dataset)
+    for col in range(1, len(COLUMNS.get(dataset))):
+        next = vals[col - 1]
+        try:
+            next = int(next)
+            ans += str(next)
+        except ValueError:
+            next = "'{}'".format(next)
+            ans += next
+        if col + 1 != len(COLUMNS.get(dataset)):
+            ans += ", "
+    print(ans)
     return ans
