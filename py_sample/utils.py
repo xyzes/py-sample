@@ -1,16 +1,17 @@
 from sqlalchemy import create_engine
+from sqlalchemy import exc
 from py_sample import views
 
 ENGINE = None # <-- Stores the engine
 CONN = None # <-- Stores the connection
 DIR = 'C:\\Users\\xyzes\\Documents\\Python\\py-sample\\data' # <-- Not used
-COLUMNS = {"album" : ["ID", "Title", "Artist ID", "Length (in Time)", "Num. of Tracks"],
-           "artist" : ["ID", "Artist", "First Name", "Last Name", "Genre ID"],
-           "genre" : ["ID", "Genre"],
-           "movie" : ["ID", "Filepath", "Filename", "Title", "Running Length", "Encoding Rate", "Release Year", "Publisher ID"],
-           "publisher" : ["ID", "Publisher", "City", "Country"],
-           "song" : ["ID", "Filepath", "Filename", "Title", "Artist ID", "Album ID", "Album Artist ID", "Release Year", "Genre ID", "Time Length", "Bit Rate", "Publisher ID"],
-           "sound" : ["ID", "Filepath", "Filename", "Artist ID", "Genre ID", "Time Length", "Bit Rate", "Publisher ID"]}
+COLUMNS = {"album" : [("ID", int), ("Title", str), ("Artist ID", int), ("Length (Time)", str), ("Num. of Tracks", int)],
+           "artist" : [("ID", int), ("Artist", str), ("First Name", str), ("Last Name", str), ("Genre ID", str)],
+           "genre" : [("ID", int), ("Genre", str)],
+           "movie" : [("ID", int), ("Filepath", str), ("Filename", str), ("Title", str), ("Running Length", str), ("Encoding Rate", int), ("Release Year", int), ("Publisher ID", int)],
+           "publisher" : [("ID", int), ("Publisher", str), ("City", str), ("Country", str)],
+           "song" : [("ID", int), ("Filepath", str), ("Filename", str), ("Title", str), ("Artist ID", int), ("Album ID", int), ("Album Artist ID", int), ("Release Year", int), ("Genre ID", str), ("Length (Time)", str), ("Bit Rate", int), ("Publisher ID", int)],
+           "sound" : [("ID", int), ("Filepath", str), ("Filename", str), ("Artist ID", int), ("Genre ID", str), ("Length (Time)", str), ("Bit Rate", int), ("Publisher ID", int)]}
 dataset = "publisher" # <-- The table displayed to the user at any given point in time
 
 
@@ -25,7 +26,7 @@ def controller(input, conn = None):
     if CONN == None and conn != None:
         ENGINE = create_engine("mssql+pyodbc:///?odbc_connect=%s" % conn)
         CONN = ENGINE.connect()
-    sql = "EXEC dbo.sproc_get{}" # <-- Default query selects a table when formatted.
+    sql = "EXEC dbo.sp_get{}" # <-- Default query selects a table when formatted.
     query = "" # <-- Initialize new query to empty string.
     # The following section interprets the input and chooses or builds a query:
     if input:
@@ -49,7 +50,7 @@ def controller(input, conn = None):
                     # Empty string is added in place of None
                     new.append("")
             if len(new) == 0:
-                pass
+                action = input.get("action")
             else:
                 # If new is not empty, that means the user attempted to add new entries.
                 # The program attempts the transaction.
@@ -58,8 +59,10 @@ def controller(input, conn = None):
                     # Attempt to commit the transaction:
                     CONN.execute(add(new)) # <-- Calls helper function add(vals)
                     transaction.commit() # COMMIT
-                except:
-                    # If the transaction fails, it is rolled back.
+                except exc.IntegrityError or exc.SQLAlchemyError:
+                    # If the transaction fails, it should be rolled back.
+                    # WARNING! This block is not properly catching exceptions:
+                    # Application crashes if invalid values are entered.
                     transaction.rollback
                     raise
                 # Since the procedure to add values does not return a value
@@ -75,7 +78,7 @@ def controller(input, conn = None):
     data += "<tr>"
     for tag in tags:
         # Each header is added to the top of the table.
-        data += "<td><b>" + tag + "</b></td>"
+        data += "<td><b>" + tag[0] + "</b></td>"
     data += "</tr>"
     for row in display:
         # This for loop iterates through the data and adds it to the table.
@@ -92,7 +95,7 @@ def controller(input, conn = None):
         else:
             # New values have the column number attached as a suffix.
             # To retrieve these values, the controller will use the indexes in COLUMNS
-            data += "<input type=\"text\" name=\"add{}\" value=\"\">".format(str(col))
+            data += "<input type=\"text\" name=\"add{}\" placeholder=\"{}\">".format(str(col), tags[col][1].__name__)
         data += "</td>"
     data += "</form></tr>"
     data += "</table>"
@@ -114,15 +117,18 @@ def add(vals):
     dataset stored by global variable dataset.
     """
     global COLUMNS, dataset
-    ans = "dbo.sproc_Insert{} ".format(dataset)
+    ans = "dbo.sp_Insert{} ".format(dataset)
     for col in range(1, len(COLUMNS.get(dataset))):
         next = vals[col - 1]
         try:
             next = int(next)
             ans += str(next)
         except ValueError:
-            next = "'{}'".format(next)
-            ans += next
+            if next == "":
+                ans += "NULL"
+            else:
+                next = "'{}'".format(next)
+                ans += next
         if col + 1 != len(COLUMNS.get(dataset)):
             ans += ", "
     print(ans)

@@ -20,16 +20,16 @@ but none of the properties of the files.
 Project was almost abandoned.
 
 [June 17, 2019 - 09:58:26 PM]
-NEW - Transferred complete sampleorganizer database from MySQL to Microsoft SQL Server Management System.
+NEW: Transferred complete sampleorganizer database from MySQL to Microsoft SQL Server Management System.
 Justification:
 Visual Studio 2019 has native compatibility for SQL, Python, and web development all in one package. It 
 is also a more user-friendly IDE and one that I am familiar with. From now on, all development of this 
 project will occur within Visual Studio.
 
-NEW - Logical design now uses int values as primary key instead of LONGTEXT or VARCHAR. File path is still
+NEW: Logical design now uses int values as primary key instead of LONGTEXT or VARCHAR. File path is still
 stored in the database as a unique key, for file modification purposes.
 
-NEW - Files added:
+NEW: Files added:
 1. runserver.py: Runs the py_sample application package.
 2. __init__.py: Main entry point for the program.
 	TODO - User should be able to do the following:
@@ -53,94 +53,105 @@ NEW - Files added:
 		  file system.
 		Respond - Accurately interpret the output received from the database and send the results to the
 		  program to be displayed to the user.
-
-FILE: media\design[06172019].png - A picture of the logical design of the database using a UML diagram.		
+5. media\design[06172019].png - A picture of the logical design of the database using a UML diagram.		
 
 [June 18, 2019 - 02:05:40 AM]
-NEW - Added Sort, Find, and CommandAlter procedures to database using Microsoft SQL Server Management
+NEW: Added Sort, Find, and CommandAlter procedures to database using Microsoft SQL Server Management
 System. Uses dynamic programming to minimize amount of SQL code in Python. Most of the logic behind the
 procedures will be in the controller (utils.py).
 
-POSSIBLE ISSUE: No backwards compatibility with MySQL from this point forward (T-SQL uses different syntax).
+Possible Issue: No backwards compatibility with MySQL from this point forward.
 
-NEW - Tested a method to iterate over files using Python. As expected, it appears to be much more 
+NEW: Tested a method to iterate over files using Python. As expected, it appears to be much more 
 intuitive than Windows Powershell. It is likely that it will require a library to read and alter the
 properties of the files as desired.
 
-TODO - Find a way to read and modify individual files using Python, given a file path or file name.
-TODO - Implement GUI: a web application would be ideal, otherwise command line will suffice.
+TODO: Find a way to read and modify individual files using Python, given a file path or file name.
+TODO: Implement GUI: a web application would be ideal, otherwise command line will suffice.
 
 [June 18, 2019 - 12:58:02 PM]
-NEW - Created Adders for all tables, created CommandDelete function to delete any value that meets a given 
+NEW: Created Adders for all tables, created CommandDelete function to delete any value that meets a given 
 condition. Database has the basic functions to implement front-end and, if time permits, data collection
 and modification of files through Python.
 
 [June 18, 2019 - 02:14:40 PM]
-NEW - Functional web application using Flask, with different sections. Will not implement style until the
+NEW: Functional web application using Flask, with different sections. Will not implement style until the
 main functionality of the program is usable.
 
-TODO - Find a way to display SQL values on web application. If not able to do by tonight, resort to cmd.
+TODO: Find a way to display SQL values on web application. If not able to do by tonight, resort to cmd.
 
 [June 18, 2019 - 11:02:48 PM]
-NEW - Values successfully displayed in HTML website since a few hours ago.
-NEW - Functions to create, read, update, delete, sort, and find by calling dynamic SQL functions are
+NEW: Values successfully displayed in HTML website since a few hours ago.
+NEW: Functions to create, read, update, delete, sort, and find by calling dynamic SQL functions are
 complete.
 
-TODO - Implement logic to interpret input in the controller.
-TODO - If time permits, find a way to let the user submit a query from the web application. Else, resort
+TODO: Implement logic to interpret input in the controller.
+TODO: If time permits, find a way to let the user submit a query from the web application. Else, resort
 to cmd and finish web application another time.
 
 [June 19, 2019 - 12:43:58 AM]
-EVENT - System crash approximately 2 mins ago. No files or changes were lost.
+EVENT: System crash approximately 2 mins ago. No files or changes were lost. No action taken.
 
-NEW - User can submit a query from the web application using a form which combines drop-down menus, text
+NEW: User can submit a query from the web application using a form which combines drop-down menus, text
 fields and a submit button. This form is then sent back to the controller to update the data shown by the
 web app.
 
-TODO - Implement logic to interpret input in the controller.
-TODO - Make sure all CRUD operations work on the database before 2:00:00 AM.
+TODO: Implement logic to interpret input in the controller.
+TODO: Make sure all CRUD operations work on the database before 2:00:00 AM.
 
 [June 19, 2019 - 1:28:15 AM]
-EVENT - Second system crash approximately 12 mins ago. All static files lost.
-ACTION TAKEN: Uninstalled all non-essential extensions. Created GitHub repository in case of loss of
+EVENT: Second system crash approximately 12 mins ago. All static files lost.
+ACTION: Uninstalled all non-essential extensions. Created GitHub repository in case of loss of
 essential files.
 RESULT: IDE appears to be running more smoothly.
 
-TODO - Complete pending actions from previous log entry before 2:30:00 AM.
+TODO: Complete pending actions from previous log entry before 2:30:00 AM.
 
 [June 19, 2019 - 2:00:38 AM]
-NEW - Web application successfully reads from database and displays results.
+NEW: Web application successfully reads from database and displays results.
 
-TODO - Implement logic for Create, Update, and Delete.
-TODO - Make web application look nicer, if time permits.
+TODO: Implement logic for Create, Update, and Delete.
+TODO: Make web application look nicer, if time permits.
 
 [June 19, 2019 - 4:00:11 AM]
-ISSUE - Error 24000: Invalid cursor state. No solution yet.
+ISSUE: Error 24000 - Invalid cursor state. No solution yet.
 
 [June 19, 2019 - 12:51:02 PM]
-EVENT - Presented progress report of project in Database Design class. No solution for Error 24000 yet.
+EVENT: Presented progress report of project in Database Design class. No solution for Error 24000 yet.
 
 [June 19, 2019 - 5:52:59 PM]
-EVENT - Re-initialized back end, will attempt to use sqlalchemy instead of pypyodbc.
-NEW - Added more stored procedures to modify or get items from tables individually.
+EVENT: Re-initialized back end, will attempt to use sqlalchemy instead of pypyodbc.
+NEW: Added more stored procedures to modify or get items from tables individually.
 
 [June 19, 2019 - 10:57:43 PM]
-NEW - Successfully changed all connections to sqlalchemy. Read operation is functional once again.
-NEW - Added comments to .py files.
-NEW - Significant UI changes (described below):
+NEW: Successfully modified all connections to use sqlalchemy. Read operation is functional again.
+NEW: Added comments to .py files.
+NEW: Significant UI changes (described below):
 
 UI changes: 
 1. To simplify logic and dynamic SQL statements, the HTML file changes the table displayed as soon as it
-is selected, without the need to hit the submit button. This table is then stored in the controller and
-all CRUD operations will be done in whatever table is selected.
+is selected, without the need to hit the submit button. The table name is then stored in the controller and
+all CRUD operations will be done in whatever table is selected at the moment.
 2. To add a new value, the table displayed by the home page now has an extra row at the bottom, which
-serves as a form to enter new values and insert them into the database.
+serves as a form to enter new values and insert them into the database at the click of a button.
 3. Tables now display column headers.
 
 [June 19, 2019 - 11:58:14 PM]
-EVENT - Successfully added new values to the database through the web app!
-NEW - Minor changes to stored procedures, to allow a variable number of arguments to insert.
+EVENT: Successfully added new values to the database through the web app!
+NEW: Minor changes to stored procedures, to allow a variable number of arguments to insert.
 
-TODO - Test all tables to look for bugs in Create operation.
-TODO - Implement logic and new UI for Update and Delete.
-TODO - If time permits, implement the Filter and Sort functions and data collection from file system.
+TODO: Test all tables to look for bugs in Create operation.
+TODO: Implement logic and new UI for Update and Delete.
+TODO: If time permits, implement the Filter and Sort functions and data collection from file system.
+
+[June 20, 2019 - 12:36:30 PM]
+NEW: Changed dbo.song.TimeLength, dbo.movie.RunningLength, and dbo.album.Timelength to DATETIME type
+instead of TIME, due to a bug with the re-created stored procedures.
+
+[June 20, 2019 - 1:25:13 PM]
+EVENT: Tested all tables to look for bugs in Create operation. All Create operations succesfully
+completed and commited to the database UNLESS given empty arguments for mandatory fields or strings in
+place of integers. try-catch block in controller is not catching the SQL error.
+
+TODO: Finish implementing logic and UI for Update and Delete.
+TODO: Start implement error-handling system (may need editing on the Back End).
