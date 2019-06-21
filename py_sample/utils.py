@@ -33,8 +33,7 @@ MANDATORY = {"album" : [0, 1],
               "publisher" : [0, 1],
               "song" : [0, 1, 2],
               "sound" : [0, 1, 2]}
-dataset = "publisher" # <-- The table displayed to the user at any given point in time
-
+dataset = "song" # <-- The table currently displayed to the user (changed by controller based on input
 def controller(input, conn = None):
     """
     Controller interprets input from the view and updates the view with data
