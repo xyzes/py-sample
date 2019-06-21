@@ -7,48 +7,54 @@
     <title>{{title}}</title>
 </head>
 <body>
-        <div class="left-div">
-            <a href="/home">Index</a>
-            <a href="/about">About</a>
-            <a href="/contact">Contact</a>
-            <h1>py-sample</h1>
-            <div>
-                <form name="Table" action="/home" method="GET">
-                    <h4>Table</h4>
-                    <select name="table" onchange="this.form.submit()">
-                        <option value=""></option>
-                        <option value="song">Songs</option>
-                        <option value="sound">Sounds</option>
-                        <option value="movie">Movies</option>
-                        <option value="artist">Artists</option>
-                        <option value="publisher">Publishers</option>
-                        <option value="album">Albums</option>
-                        <option value="genre">Genres</option>
-                    </select>
-                </form>
-            </div>
+    <div class="left-div">
+        <h1>py-sample</h1>
+        <div>
+            <form name="Table" action="/home" method="GET">
+                <h4>Table</h4>
+                <select name="table" onchange="this.form.submit()">
+                    <option value=""></option>
+                    <option value="song">Songs</option>
+                    <option value="sound">Sounds</option>
+                    <option value="movie">Movies</option>
+                    <option value="artist">Artists</option>
+                    <option value="publisher">Publishers</option>
+                    <option value="album">Albums</option>
+                    <option value="genre">Genres</option>
+                </select>
+            </form>
+        </div>
+        <form name="Action" action="/home" method="GET">
             <div>
                 <h4>Action</h4>
+                <p>Select an action to be applied to the specified items.</p>
+                <p>Leaving blank will have no effect on database.</p>
                 <select name="action">
                     <option value=""></option>
                     <option value="update">Update</option>
                     <option value="delete">Delete</option>
-                    <option value="sort">Sort</option>
-                    <option value="find">Find</option>
                 </select>
             </div>
             <div>
-                <h4>Sort Order</h4>
-                <select name="direction">
-                    <option value=""></option>
-                    <option value="desc">Descending</option>
-                    <option value="asc">Ascending</option>
-                </select>
+                <h4>Row to Modify or Delete</h4>
+                <p>Specified by the ID number from the table</p>
+                <input type="text" name="id" value="">
             </div>
             <div>
-                <h4>Condition (No effect on CREATE operations. Leave blank to READ all columns.)</h4>
-                <input type="text" name="Item 1" value="">
-                <select name="Comparator">
+                <h4>Column to Modify (Only used for Update operations).</h4>
+                <p>Specified by the headers from the table</p>
+                <input type="text" name="col" value="">
+            </div>
+            <div>
+                <h4>New value (Only used for Update operations).</h4>
+                <p>Leaving blank will attempt to delete the value.</p>
+                <input type="text" name="new" value="">
+            </div>
+            <!-- For FILTER and SORT operations (not used)
+            <div>
+                <h4>Condition</h4>
+                <input type="text" name="left" value="">
+                <select name="comp">
                     <option value="=">=</option>
                     <option value="!=">!=</option>
                     <option value="<"><</option>
@@ -57,18 +63,17 @@
                     <option value=">=">>=</option>
                     <option value="has">has</option>
                 </select>
-                <input type="text" name="Item 2" value="">
-            </div>
-            <div>
-                <h4>Column to Modify or Order By (Only used for UPDATE and SORT operations).</h4>
-                <input type="text" name="column" value="">
-            </div>
+                <input type="text" name="right" value="">
+                </div>
+            -->
             <div>
                 <input type="submit" value="Submit" />
             </div>
-        </div>
+        </form>
+    </div>
     <div class="right-div">
         <h4>RESULTS</h4>
+        <p>Using table: {{table}}</p>
         {{data}}
     </div>
 </body>

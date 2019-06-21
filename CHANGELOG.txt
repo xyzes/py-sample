@@ -29,7 +29,7 @@ project will occur within Visual Studio.
 NEW: Logical design now uses int values as primary key instead of LONGTEXT or VARCHAR. File path is still
 stored in the database as a unique key, for file modification purposes.
 
-NEW: Files added:
+NEW: Files added
 1. runserver.py: Runs the py_sample application package.
 2. __init__.py: Main entry point for the program.
 	TODO - User should be able to do the following:
@@ -114,7 +114,7 @@ TODO: Implement logic for Create, Update, and Delete.
 TODO: Make web application look nicer, if time permits.
 
 [June 19, 2019 - 4:00:11 AM]
-ISSUE: Error 24000 - Invalid cursor state. No solution yet.
+BUG: Error 24000 - Invalid cursor state. No solution yet.
 
 [June 19, 2019 - 12:51:02 PM]
 EVENT: Presented progress report of project in Database Design class. No solution for Error 24000 yet.
@@ -155,3 +155,64 @@ place of integers. try-catch block in controller is not catching the SQL error.
 
 TODO: Finish implementing logic and UI for Update and Delete.
 TODO: Start implement error-handling system (may need editing on the Back End).
+
+[June 20, 2019 - 6:21:38 PM]
+EVENT: Successfully deleted values from the database through the web app!
+Currently working on debugging Update procedure.
+
+[June 20, 2019 - 7:02:57 PM]
+EVENT: Successfully updated values from the database through the web app!
+NEW: dbo.sp_updateint and dbo.sp_updatestr procedures to update a column in the database.
+
+TODO: Test all CRUD operations for resilience and error handling.
+TODO: Create README once the correct functionality of all basic CRUD operations is verified.
+
+[June 20, 2019 - 7:29:24 PM]
+BUG: Not all fields are modifiable (Found when trying to modify Filename for a movie entry). The reason
+is most likely because column names in utils.COLUMNS global constant do not match column names from
+the database.
+
+TODO: Implement a solution to modify values independently of their display names.
+TODO: Continue testing CRUD operations for bugs.
+
+[June 20, 2019 - 8:08:38 PM]
+NEW: Added ON DELETE SET NULL constraints to most foreign keys.
+BUG: Cannot add ON DELETE SET NULL to foreign key AlbumArtistID on dbo.song as it references the same
+key as ArtistID and could create multiple cascade paths.
+
+TODO: Find a way to add ON DELETE SET NULL foreign key constraint to AlbumArtistID.
+
+[June 20, 2019 - 8:24:35 PM]
+BUG: Cannot add values with double or single quotes into the database (Found when trying to insert
+80's as a Genre in table dbo.genres.
+BUG: Keys occasionally increase by 1001 instead of 1.
+
+TODO: Find a way to automatically escape quotes within the program.
+
+[June 20, 2019 - 8:30:32 PM]
+NEW: Genres are now unique, to avoid duplicate genres.
+
+TODO: When scanning is implemented, provide the user with a way to change all instances of a genre to
+a different genre (e.g Change all Hip_Hop to Hip-Hop, change all Alt-Rock to Alternative).
+
+Possible issue: Not all audio files in the file system have a Title attribute specified. However,
+the dbo.song table requires that the Title value not be null. This must be dealt with once scanning is
+implemented.
+
+[June 20, 2019 - 8:47:51 PM]
+NEW: Inserting values is now done with a different dictionary that stores the names of the table
+parameters in the program. Function is now independent of what is displayed on the web app.
+BUG: Inserting Artist ID foreign key to value in song table using UPDATE is not functional (Found
+when inserting key 2002 [Kendrick Lamar] as Artist ID to dbo.song ID 15 [02.DNA.mp3])
+
+[June 20, 2019 - 9:14:35 PM]
+No major changes.
+
+[June 20, 2019 - 10:01:58]
+NEW: Files added
+1. data\py-sample.backpac: Data-tier application to recreate the database in SQL Server Management Studio.
+2. media\diagram[06202019]: Diagram of the current database.
+
+TODO: Finish README and report, submit project for review.
+
+All development of the project will be halted until reviewed by CS3200 staff.

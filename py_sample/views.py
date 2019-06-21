@@ -21,10 +21,10 @@ def home():
         'index.html',
         title='Home Page',
         year=datetime.now().year,
-        data=Markup(data) # <-- This function renders the output of the controller to the user.
+        table=utils.get_dataset(),
+        data=Markup(data) # <-- This function renders the output of the controller to the user.     
     )
 
-@app.route('/contact')
 def contact():
     """Renders the contact page (Not used)."""
     return render_template(
@@ -34,7 +34,6 @@ def contact():
         message='Your contact page.'
     )
 
-@app.route('/about')
 def about():
     """Renders the about page (Not used)."""
     return render_template(

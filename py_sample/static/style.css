@@ -26,6 +26,7 @@ table, th, td, tr {
     border-width: 5px;
     border-color: black;
     background-color: white;
+    font-size: 11px;
     float: left;
     width: 200px;
     height: 90%;

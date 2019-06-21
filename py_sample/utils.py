@@ -5,15 +5,35 @@ from py_sample import views
 ENGINE = None # <-- Stores the engine
 CONN = None # <-- Stores the connection
 DIR = 'C:\\Users\\xyzes\\Documents\\Python\\py-sample\\data' # <-- Not used
-COLUMNS = {"album" : [("ID", int), ("Title", str), ("Artist ID", int), ("Length (Time)", str), ("Num. of Tracks", int)],
-           "artist" : [("ID", int), ("Artist", str), ("First Name", str), ("Last Name", str), ("Genre ID", str)],
-           "genre" : [("ID", int), ("Genre", str)],
-           "movie" : [("ID", int), ("Filepath", str), ("Filename", str), ("Title", str), ("Running Length", str), ("Encoding Rate", int), ("Release Year", int), ("Publisher ID", int)],
-           "publisher" : [("ID", int), ("Publisher", str), ("City", str), ("Country", str)],
-           "song" : [("ID", int), ("Filepath", str), ("Filename", str), ("Title", str), ("Artist ID", int), ("Album ID", int), ("Album Artist ID", int), ("Release Year", int), ("Genre ID", str), ("Length (Time)", str), ("Bit Rate", int), ("Publisher ID", int)],
-           "sound" : [("ID", int), ("Filepath", str), ("Filename", str), ("Artist ID", int), ("Genre ID", str), ("Length (Time)", str), ("Bit Rate", int), ("Publisher ID", int)]}
+COLUMNS = {"album" : ["ID", "Title", "Artist ID", "Length (Time)", "Num. of Tracks"],
+           "artist" : ["ID", "Artist", "First Name", "Last Name", "Genre ID"],
+           "genre" : ["ID", "Genre"],
+           "movie" : ["ID", "Filepath", "Filename", "Title", "Running Length", "Encoding Rate", "Release Year", "Publisher ID"],
+           "publisher" : ["ID", "Publisher", "City", "Country"],
+           "song" : ["ID", "Filepath", "Filename", "Title", "Artist ID", "Album ID", "Album Artist ID", "Release Year", "Genre ID", "Length (Time)", "Bit Rate", "Publisher ID"],
+           "sound" : ["ID", "Filepath", "Filename", "Artist ID", "Genre ID", "Length (Time)", "Bit Rate", "Publisher ID"]}
+PARAMS = {"album" : ["ID", "Title", "ArtistID", "TimeLength", "Tracks"],
+           "artist" : ["ID", "Artist", "FirstName", "LastName", "GenreID"],
+           "genre" : ["ID", "Genre"],
+           "movie" : ["ID", "Directory", "Movie", "Title", "RunningLength", "EncodingRate", "ReleaseYear", "PublisherID"],
+           "publisher" : ["ID", "Publisher", "City", "Country"],
+           "song" : ["ID", "Directory", "Song", "Title", "ArtistID", "AlbumID", "AlbumArtistID", "ReleaseYear", "GenreID", "TimeLength", "BitRate", "PublisherID"],
+           "sound" : ["ID", "Directory", "Sound", "ArtistID", "GenreID", "TimeLength", "BitRate", "PublisherID"]}
+TYPES = {"album" : [1, 0, 1, 0, 1],
+         "artist" : [1, 0, 0, 0, 1],
+         "genre" : [1, 0],
+         "movie" : [1, 0, 0, 0, 0, 1, 1, 1],
+         "publisher" : [1, 0, 0, 0],
+         "song" : [1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1],
+         "sound" : [1, 0, 0, 1, 1, 0, 1, 1]}
+MANDATORY = {"album" : [0, 1],
+              "artist" : [0, 1],
+              "genre" : [0, 1],
+              "movie" : [0, 1, 2],
+              "publisher" : [0, 1],
+              "song" : [0, 1, 2],
+              "sound" : [0, 1, 2]}
 dataset = "publisher" # <-- The table displayed to the user at any given point in time
-
 
 def controller(input, conn = None):
     """
@@ -49,27 +69,77 @@ def controller(input, conn = None):
                 else:
                     # Empty string is added in place of None
                     new.append("")
-            if len(new) == 0:
+            create = add(new)
+            if not create:
+                # If the Add form was not submitted, check if the Query form was:
                 action = input.get("action")
+                if not action:
+                    # If no action was selected, continue to display current table:
+                    query = sql.format(dataset)
+                else:
+                    if action == "update":
+                        id = input.get("id")
+                        col = input.get("col")
+                        val = input.get("new")
+                        modify = update(id, col, val)
+                        # If the update helper did not return an empty sequence, execute
+                        # the string as an SQL statement.
+                        if modify:
+                            transaction = CONN.begin()
+                            try:
+                                CONN.execute(modify)
+                                transaction.commit()
+                            except exc.IntegrityError or exc.SQLAlchemyError or exc.ProgrammingError:
+                                transaction.rollback()
+                                raise
+                        # Since the procedure to update values does not return a table,
+                        # the program needs to call the default query to display the
+                        # table once again.
+                        query = sql.format(dataset)
+                    # If action is delete:
+                    elif action == "delete":
+                        # Call the delete helper to retrieve the query
+                        id = input.get("id")
+                        remove = delete(id)
+                        # If the delete helper did not return an empty sequence, execute
+                        # the string as an SQL statement.
+                        if remove:
+                            transaction = CONN.begin()
+                            try:
+                                CONN.execute(remove)
+                                transaction.commit()
+                            except exc.IntegrityError or exc.SQLAlchemyError:
+                                transaction.rollback()
+                                raise
+                        # Since the procedure to delete values does not return a table,
+                        # the program needs to call the default query to display the
+                        # table once again.
+                        query = sql.format(dataset)
+                        pass
+
             else:
                 # If new is not empty, that means the user attempted to add new entries.
                 # The program attempts the transaction.
                 transaction = CONN.begin()
                 try:
                     # Attempt to commit the transaction:
-                    CONN.execute(add(new)) # <-- Calls helper function add(vals)
+                    CONN.execute(create) # <-- Calls helper function add(vals)
                     transaction.commit() # COMMIT
                 except exc.IntegrityError or exc.SQLAlchemyError:
                     # If the transaction fails, it should be rolled back.
                     # WARNING! This block is not properly catching exceptions:
                     # Application crashes if invalid values are entered.
-                    transaction.rollback
+                    transaction.rollback()
                     raise
-                # Since the procedure to add values does not return a value
+                # Since the procedure to add values does not return a table, the program
+                # needs to call the default query to display the table once again.
                 query = sql.format(dataset)
                 pass
     else:
         # If no input is given, continue to display current table:
+        query = sql.format(dataset)
+    if not query:
+        # If input was given, but no valid query was constructed, continue to display current table:
         query = sql.format(dataset)
     # The following section constructs the output from the data received:
     display = CONN.execute(query)
@@ -78,7 +148,7 @@ def controller(input, conn = None):
     data += "<tr>"
     for tag in tags:
         # Each header is added to the top of the table.
-        data += "<td><b>" + tag[0] + "</b></td>"
+        data += "<td><b>" + tag + "</b></td>"
     data += "</tr>"
     for row in display:
         # This for loop iterates through the data and adds it to the table.
@@ -95,7 +165,7 @@ def controller(input, conn = None):
         else:
             # New values have the column number attached as a suffix.
             # To retrieve these values, the controller will use the indexes in COLUMNS
-            data += "<input type=\"text\" name=\"add{}\" placeholder=\"{}\">".format(str(col), tags[col][1].__name__)
+            data += "<input type=\"text\" name=\"add{}\" placeholder=\"{}\">".format(str(col), tags[col])
         data += "</td>"
     data += "</form></tr>"
     data += "</table>"
@@ -111,25 +181,117 @@ def scan():
         for file in files:
             print(str.join(subdir, file))
 
+def get_dataset():
+    """
+    This function returns the name of the table currently used by the program.
+    """
+    global dataset
+    return dataset
+
 def add(vals):
     """
     This function will construct a SQL statement to add the values given to the
     dataset stored by global variable dataset.
     """
-    global COLUMNS, dataset
-    ans = "dbo.sp_Insert{} ".format(dataset)
+    global COLUMNS, TYPES, MANDATORY, dataset
+    args = "" # <-- Initialize args to empty sequence
+    types = TYPES.get(dataset) # <-- Fetch types for fields
+    mandatory = MANDATORY.get(dataset) # <-- Fetch indexes of mandatory fields
     for col in range(1, len(COLUMNS.get(dataset))):
         next = vals[col - 1]
-        try:
-            next = int(next)
-            ans += str(next)
-        except ValueError:
-            if next == "":
-                ans += "NULL"
-            else:
-                next = "'{}'".format(next)
-                ans += next
+        if not next and col in mandatory:
+            # If a mandatory field was empty, return empty sequence (no action taken in controller):
+            return ""
+        elif not next and col not in mandatory:
+            # If a non-mandatory field was empty, add to args as NULL:
+            args += "NULL"
+        elif next:
+            # If field was not empty:
+            if types[col] == 0: # <-- Type 0 is non-integer.
+                args += "'{}'".format(next)
+            if types[col] == 1: # <-- Type 1 is integer.
+                try:
+                    # Attempt to convert value to integer to check type:
+                    next = int(next)
+                    args += str(next)
+                except ValueError:
+                    # If item cannot be converted to an integer, return empty sequence (no action taken in controller):
+                    return ""
         if col + 1 != len(COLUMNS.get(dataset)):
-            ans += ", "
-    print(ans)
-    return ans
+            # If the value is not the last column, add a comma:
+            args += ", "
+    # print(args)
+    if args:
+        # If function gets this far and args is not empty, return string to insert the values:
+        return "dbo.sp_Insert{} {}".format(dataset, args)
+    else:
+        # If function gets this far but args is empty, return empty sequence (no action taken in controller):
+        return args
+
+def update(id, col, val):
+    """
+    This function will construct a SQL statement to modify a column in the
+    table stored in the controller, using the row ID and column name
+    specified by the user and replacing its current value by the new value.
+    """
+    global PARAMS, TYPES, MANDATORY, dataset
+    args = ""
+    types = TYPES.get(dataset)
+    mandatory = MANDATORY.get(dataset)
+    params = PARAMS.get(dataset)
+    index = None
+    # The following section adds the @ID parameter
+    try:
+        # Check if id is an integer:
+        arg = int(id)
+        args += "{}, ".format(arg) # Add @ID parameter
+    except ValueError:
+        # If id was not an integer, return empty string (no action taken in controller):
+        return ""
+    # The following section adds the @column paramater
+    try:
+        index = COLUMNS.get(dataset).index(col) # <-- Find the index of the column to be modified
+        args += "'{}', ".format(params[index]) # Add @column parameter
+    except ValueError:
+        # If col is not in the dataset columns, return empty string (no action taken in controller):
+        return ""
+    # The following section adds the @new parameter
+    try:
+        if not val and index in mandatory:
+            # If a mandatory field was  set to be empty, return empty string (no action taken in controller):
+            return ""
+        elif not val and index not in mandatory:
+            # If a non-mandatory field was set to be empty, add to args as NULL:
+            args += "NULL"
+        elif val:
+            if types[index] == 0: # <-- Type 0 is non-integer.
+                args = "str {}, {}".format(dataset, args)
+                args += "'{}'".format(val)
+            elif types[index] == 1: # <-- Type 1 is integer.
+                # Attempt to convert value to integer to check type:
+                args = "int {}, {}".format(dataset, args)
+                new = int(val)
+                args += str(val)
+    except ValueError:
+        # If the wrong type was give, return empty string (no action taken in controller):
+        return ""
+    if args:
+        # If function gets this far and args is not empty, return string to edit the value:
+        return "dbo.sp_Update{}".format(args)
+    else:
+        # If function gets this far but args is empty, return empty sequence (no action taken in controller):
+        return args
+
+def delete(id):
+    """
+    This function will construct a SQL statement to remove a value from the
+    table stored in the controller, using the row ID specified by the user
+    """
+    global dataset
+    try:
+        # Check if id is an integer:
+        args = int(id)
+        return "dbo.sp_Delete{} {}".format(dataset, str(args))
+    except ValueError:
+        # If id was not an integer, return empty string (no action taken in controller):
+        return ""
