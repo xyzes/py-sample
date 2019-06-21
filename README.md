@@ -11,4 +11,4 @@ Features of the program will include:
     <li>A minimalistic interface to view the database and command changes in the file system.</li>
   </ol>
 </div>
-Originally intended as an application to allow music producers, DJ's, and other digital music workers to better organize their files safely and efficiently through its minimalistic interface, its final state will also support video files and e-books.
+Originally intended as an application to allow music producers, DJ's, and other digital music workers to better organize their files safely and efficiently through its minimalistic interface, its final state will support many more files.
