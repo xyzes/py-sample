@@ -36,49 +36,11 @@
     <Compile Include="py_sample\views.py" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="data\" />
-    <Folder Include="data\movie\" />
-    <Folder Include="data\song\" />
-    <Folder Include="data\sound\" />
-    <Folder Include="media\" />
     <Folder Include="py_sample\" />
     <Folder Include="py_sample\static\" />
     <Folder Include="py_sample\templates\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="data\movie\AKIRA[Fragment].mp4" />
-    <Content Include="data\movie\Orchestral Cymbal Mid Shot Roll.Mp470432-1.m4v" />
-    <Content Include="data\movie\Satellite Night Time Flyby.Mov90936-1.m4v" />
-    <Content Include="data\movie\superheroTeaser1.mov" />
-    <Content Include="data\movie\superheroTeaser2.mov" />
-    <Content Include="data\song\02 10 d E A T h b R E a s T ⚄ ⚄.mp3" />
-    <Content Include="data\song\02 Dreams.mp3" />
-    <Content Include="data\song\03 Skinny Love.mp3" />
-    <Content Include="data\song\04 33 _GOD_.mp3" />
-    <Content Include="data\song\1-02 bad guy.mp3" />
-    <Content Include="data\song\1-06 Karma Police.mp3" />
-    <Content Include="data\song\1-08 Electioneering 1.mp3" />
-    <Content Include="data\song\1-09 my strange addiction.mp3" />
-    <Content Include="data\song\ONE_MORE_TIME-192.mp3" />
-    <Content Include="data\song\Superhero [Live Set].wav" />
-    <Content Include="data\sound\._100Hz Snare.wav" />
-    <Content Include="data\sound\._AJ Trashy.wav" />
-    <Content Include="data\sound\._Floor.Tom.wav" />
-    <Content Include="data\sound\Cymatics - Drum &amp; Bass Bass Loop 5 - 174 BPM F#.wav" />
-    <Content Include="data\sound\Cymatics - Future Bass Drop Loop 1 - 140 BPM D# Min.wav" />
-    <Content Include="data\sound\Cymatics - Mirage Vocoder Loop 1 - 100 BPM C# Min.wav" />
-    <Content Include="data\sound\Cymatics - Piano Loop 1 - 150 BPM D# Min.wav" />
-    <Content Include="data\sound\Cymatics - String Loop 5 - 150 BPM D# Min.wav" />
-    <Content Include="data\sound\Cymatics - String Loop 6 - 140 BPM F Min.wav" />
-    <Content Include="data\sound\Drill [Backing Track].mp3" />
-    <Content Include="data\sound\jazz.mp3" />
-    <Content Include="data\sound\loop.mp3" />
-    <Content Include="data\sound\Ste Ingham Synthwave Clap 02.wav" />
-    <Content Include="data\sound\Ste Ingham Synthwave Crash.wav" />
-    <Content Include="data\sound\Ste Ingham Synthwave Hi Hat 07.wav" />
-    <Content Include="data\sound\Ste Ingham Synthwave Kick 01.wav" />
-    <Content Include="data\sound\Whoosh_Pass_By_PSEF.182.wav" />
-    <Content Include="media\design[06172019].png" />
     <Content Include="py_sample\static\style.css" />
     <Content Include="py_sample\templates\index.html" />
     <Content Include="py_sample\templates\contact.html" />
