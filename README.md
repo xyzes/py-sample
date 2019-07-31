@@ -1,4 +1,4 @@
-# py-sample
+# PySampler
 
 <h3>Introduction</h3>
 This project is a Python web application to manage, store, and edit metadata of multimedia files through the use of a database.
